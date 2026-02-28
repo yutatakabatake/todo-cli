@@ -51,6 +51,21 @@ try {
     if (values.new) {
         const res = await client.query('INSERT INTO tasks(task_name) VALUES ($1)', [values.new]);
         console.log(`Create new task: ${values.new}`)
+    } else if (values.list) {
+        const status = values.list;
+        if (status === 'all') {
+            const res = await client.query('SELECT task_id, task_name, done FROM tasks');
+            console.log('All tasks');
+            console.log(res.rows);
+        } else if (status === 'done') {
+            const res = await client.query('SELECT task_id, task_name, done FROM tasks WHERE done = true');
+            console.log('Done tasks');
+            console.log(res.rows);
+        } else if (status === 'pending') {
+            const res = await client.query('SELECT task_id, task_name, done FROM tasks WHERE done = false');
+            console.log('Pending tasks');
+            console.log(res.rows);
+        }
     }
 
 } catch (err) {
