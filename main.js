@@ -2,7 +2,7 @@
 'use strict';
 
 import * as util from "node:util";
-import { Client } from 'pg';
+import { Pool } from 'pg';
 import 'dotenv/config';
 
 const { values, positionals } =
@@ -38,7 +38,7 @@ const { values, positionals } =
         }
     });
 
-const client = new Client({
+const pool = new Pool({
     user: process.env.DB_USER,
     host: process.env.DB_HOST,
     database: process.env.DB_NAME,
@@ -46,32 +46,31 @@ const client = new Client({
     port: process.env.DB_PORT
 });
 
-await client.connect();
 
 try {
     if (values.new) {
-        const res = await client.query('INSERT INTO tasks(task_name) VALUES ($1)', [values.new]);
+        const res = await pool.query('INSERT INTO tasks(task_name) VALUES ($1)', [values.new]);
         console.log(`Create new task: ${values.new}`)
     } else if (values.list) {
         const status = values.list;
         if (status === 'all') {
-            const res = await client.query('SELECT task_id, task_name, done FROM tasks');
+            const res = await pool.query('SELECT task_id, task_name, done FROM tasks');
             console.log('All tasks');
             console.log(res.rows);
         } else if (status === 'done') {
-            const res = await client.query('SELECT task_id, task_name, done FROM tasks WHERE done = true');
+            const res = await pool.query('SELECT task_id, task_name, done FROM tasks WHERE done = true');
             console.log('Done tasks');
             console.log(res.rows);
         } else if (status === 'pending') {
-            const res = await client.query('SELECT task_id, task_name, done FROM tasks WHERE done = false');
+            const res = await pool.query('SELECT task_id, task_name, done FROM tasks WHERE done = false');
             console.log('Pending tasks');
             console.log(res.rows);
         }
     } else if (values.done) {
-        const res = await client.query('UPDATE tasks SET done = true WHERE task_name = $1', [values.done]);
+        const res = await pool.query('UPDATE tasks SET done = true WHERE task_name = $1', [values.done]);
         console.log(`Done ${values.done}`);
     } else if (values.delete) {
-        const res = await client.query('DELETE FROM tasks WHERE task_name = $1', [values.delete]);
+        const res = await pool.query('DELETE FROM tasks WHERE task_name = $1', [values.delete]);
         console.log(`Delete ${values.delete}`);
     } else if (values.help) {
         console.log('todo <option> <task_name>');
@@ -88,6 +87,4 @@ try {
 
 } catch (err) {
     console.error(err);
-} finally {
-    await client.end()
-}
+} 
