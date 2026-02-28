@@ -8,8 +8,7 @@ const { values, positionals } =
         options: {
             // --new to add a new todo item
             new: {
-                type: "boolean",
-                default: false
+                type: "string"
             },
             // --list [all|pending|done] to list the todo items
             list: {
@@ -48,6 +47,14 @@ const client = new Client({
 
 await client.connect();
 
-const res = await client.query('SELECT $1::text as message', ['Hello world!'])
-console.log(res.rows[0].message) // Hello world!
-await client.end()
+try {
+    if (values.new) {
+        const res = await client.query('INSERT INTO tasks(task_name) VALUES ($1)', [values.new]);
+        console.log(`Create new task: ${values.new}`)
+    }
+
+} catch (err) {
+    console.error(err);
+} finally {
+    await client.end()
+}
