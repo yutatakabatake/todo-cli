@@ -70,6 +70,8 @@ try {
     } else if (values.delete) {
         const res = await client.query('DELETE FROM tasks WHERE task_name = $1', [values.delete]);
         console.log(`Delete ${values.delete}`);
+    } else if (values.version) {
+        console.log('v1.0.0');
     }
 
 } catch (err) {
