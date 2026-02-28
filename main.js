@@ -1,3 +1,6 @@
+#!/usr/bin/env node
+'use strict';
+
 import * as util from "node:util";
 import { Client } from 'pg';
 import 'dotenv/config';
@@ -71,7 +74,7 @@ try {
         const res = await client.query('DELETE FROM tasks WHERE task_name = $1', [values.delete]);
         console.log(`Delete ${values.delete}`);
     } else if (values.help) {
-        console.log('node main.js <option> <task_name>');
+        console.log('todo <option> <task_name>');
         console.log('usage:');
         console.log('\t [--new] create new todo task');
         console.log('\t [--list [all | pending | done]] list the todo tasks');
