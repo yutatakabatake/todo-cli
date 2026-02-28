@@ -20,8 +20,7 @@ const { values, positionals } =
             },
             // --delete [id] to delete a todo item
             delete: {
-                type: "boolean",
-                default: false
+                type: "string"
             },
             // --help to list all the available options
             help: {
@@ -68,6 +67,9 @@ try {
     } else if (values.done) {
         const res = await client.query('UPDATE tasks SET done = true WHERE task_name = $1', [values.done]);
         console.log(`Done ${values.done}`);
+    } else if (values.delete) {
+        const res = await client.query('DELETE FROM tasks WHERE task_name = $1', [values.delete]);
+        console.log(`Delete ${values.delete}`);
     }
 
 } catch (err) {
