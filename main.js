@@ -70,6 +70,15 @@ try {
     } else if (values.delete) {
         const res = await client.query('DELETE FROM tasks WHERE task_name = $1', [values.delete]);
         console.log(`Delete ${values.delete}`);
+    } else if (values.help) {
+        console.log('node main.js <option> <task_name>');
+        console.log('usage:');
+        console.log('\t [--new] create new todo task');
+        console.log('\t [--list [all | pending | done]] list the todo tasks');
+        console.log('\t [--done] update a todo task');
+        console.log('\t [--delete] delete a todo task');
+        console.log('\t [--help] list all the available options');
+        console.log('\t [--version] print the version of the application');
     } else if (values.version) {
         console.log('v1.0.0');
     }
