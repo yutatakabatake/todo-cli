@@ -28,6 +28,10 @@ const { values, positionals } =
             version: {
                 type: "boolean",
                 default: false
+            },
+            init: {
+                type: "boolean",
+                default: false
             }
         }
     });
@@ -83,8 +87,20 @@ try {
     } else if (values.version) {
         // --version to print the version of the application
         console.log('v1.0.0');
-    }
+    } else if (values.init) {
+        // --init to create table of the database
+        console.log('initializing...');
+        pool.query(
+            `CREATE TABLE tasks (
+                task_id SERIAL PRIMARY KEY,
+                task_name VARCHAR (50) NOT NULL,
+                done BOOLEAN DEFAULT false
+            )`);
 
+        console.log('Complete initializing!');
+    }
 } catch (err) {
     console.error(err);
-} 
+} finally {
+    await pool.end();
+}
