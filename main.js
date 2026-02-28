@@ -16,8 +16,7 @@ const { values, positionals } =
             },
             // --done [id] to update a todo item
             done: {
-                type: "boolean",
-                default: false
+                type: "string"
             },
             // --delete [id] to delete a todo item
             delete: {
@@ -66,6 +65,9 @@ try {
             console.log('Pending tasks');
             console.log(res.rows);
         }
+    } else if (values.done) {
+        const res = await client.query('UPDATE tasks SET done = true WHERE task_name = $1', [values.done]);
+        console.log(`Done ${values.done}`);
     }
 
 } catch (err) {
