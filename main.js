@@ -9,28 +9,22 @@ const { values, positionals } =
     util.parseArgs({
         allowPositionals: true,
         options: {
-            // --new to add a new todo item
             new: {
                 type: "string"
             },
-            // --list [all|pending|done] to list the todo items
             list: {
                 type: "string"
             },
-            // --done [id] to update a todo item
             done: {
                 type: "string"
             },
-            // --delete [id] to delete a todo item
             delete: {
                 type: "string"
             },
-            // --help to list all the available options
             help: {
                 type: "boolean",
                 default: false
             },
-            // --version to print the version of the application
             version: {
                 type: "boolean",
                 default: false
@@ -49,9 +43,11 @@ const pool = new Pool({
 
 try {
     if (values.new) {
+        // --new to add a new todo item
         const res = await pool.query('INSERT INTO tasks(task_name) VALUES ($1)', [values.new]);
         console.log(`Create new task: ${values.new}`)
     } else if (values.list) {
+        // --list [all|pending|done] to list the todo items
         const status = values.list;
         if (status === 'all') {
             const res = await pool.query('SELECT task_id, task_name, done FROM tasks');
@@ -67,12 +63,15 @@ try {
             console.log(res.rows);
         }
     } else if (values.done) {
+        // --done [id] to update a todo item
         const res = await pool.query('UPDATE tasks SET done = true WHERE task_name = $1', [values.done]);
         console.log(`Done ${values.done}`);
     } else if (values.delete) {
+        // --delete [id] to delete a todo item
         const res = await pool.query('DELETE FROM tasks WHERE task_name = $1', [values.delete]);
         console.log(`Delete ${values.delete}`);
     } else if (values.help) {
+        // --help to list all the available options
         console.log('todo <option> <task_name>');
         console.log('usage:');
         console.log('\t [--new] create new todo task');
@@ -82,6 +81,7 @@ try {
         console.log('\t [--help] list all the available options');
         console.log('\t [--version] print the version of the application');
     } else if (values.version) {
+        // --version to print the version of the application
         console.log('v1.0.0');
     }
 
